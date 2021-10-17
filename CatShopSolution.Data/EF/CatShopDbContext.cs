@@ -1,5 +1,8 @@
 ﻿using CatShopSolution.Data.Configurations;
 using CatShopSolution.Data.Entity;
+using CatShopSolution.Data.Extentions;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -7,7 +10,7 @@ using System.Text;
 
 namespace CatShopSolution.Data.EF
 {
-    public class CatShopDbContext : DbContext
+    public class CatShopDbContext : IdentityDbContext<AppUser,AppRole,Guid>
     {
         public CatShopDbContext( DbContextOptions options) : base(options)
         {
@@ -32,6 +35,18 @@ namespace CatShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 
 
+            modelBuilder.ApplyConfiguration(new AppUserConfiguration());
+            modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
+
+            modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
+            modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
+            modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("AppUserLogins").HasKey(x => x.UserId);
+
+            modelBuilder.Entity<IdentityRoleClaim<Guid>>().ToTable("AppRoleClaims");
+            modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("AppUserTokens").HasKey(x => x.UserId);
+
+            //Data seeding
+            modelBuilder.Seed();
             //base.OnModelCreating(modelBuilder);
         }
         public DbSet<Product> Products { get; set; }
