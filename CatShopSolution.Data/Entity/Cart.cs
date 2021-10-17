@@ -17,6 +17,6 @@ namespace CatShopSolution.Data.Entity
 
         public DateTime DateCreated { get; set; }
 
-        //public AppUser AppUser { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

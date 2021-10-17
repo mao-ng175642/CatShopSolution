@@ -18,7 +18,7 @@ namespace CatShopSolution.Data.Entity
 
         public List<OrderDetail> OrderDetails { get; set; }
 
-        //public AppUser AppUser { get; set; }
+        public AppUser AppUser { get; set; }
 
     }
 }
