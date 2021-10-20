@@ -9,9 +9,6 @@ namespace CatShopSolution.Data.Configurations
 {
     public class CartConfiguration: IEntityTypeConfiguration<Cart>
     {
-
-        
-
         public void Configure(EntityTypeBuilder<Cart> builder)
         {
             builder.ToTable("Carts");
