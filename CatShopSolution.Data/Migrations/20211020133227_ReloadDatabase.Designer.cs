@@ -4,14 +4,16 @@ using CatShopSolution.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CatShopSolution.Data.Migrations
 {
     [DbContext(typeof(CatShopDbContext))]
-    partial class CatShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211020133227_ReloadDatabase")]
+    partial class ReloadDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,7 +80,7 @@ namespace CatShopSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "1924ec9c-8faa-42a2-adc7-3589969a2590",
+                            ConcurrencyStamp = "fb6d14ac-b291-4df7-bd8f-8a69d36c6c98",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -155,8 +157,8 @@ namespace CatShopSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "12e83aad-054b-47c5-bb92-13249bcf7a39",
-                            Dob = new DateTime(2021, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "a2b2a989-cdf1-4d1d-ae44-6fe3ff80bfce",
+                            Dob = new DateTime(2021, 10, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mao.ng175642@sis.hust.edu.vn",
                             EmailConfirmed = true,
                             FirstName = "Mao",
@@ -164,7 +166,7 @@ namespace CatShopSolution.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "mao.ng175642@sis.hust.edu.vn",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDF7kvuglebfaOR+p/eu2ofPx37+xRBa9+SPMmI3BQHHz8ITxPfqjgrwzsGfZZGe3g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGsaAiIpHpFuZDvDbEyKGZEDLgwf/ODja/6mk88geTASjQp2la4zJu2WivnDLnMk7Q==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -520,7 +522,7 @@ namespace CatShopSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 10, 17, 23, 36, 44, 295, DateTimeKind.Local).AddTicks(7836),
+                            DateCreated = new DateTime(2021, 10, 20, 20, 32, 26, 685, DateTimeKind.Local).AddTicks(8434),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Stock = 0,

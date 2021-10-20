@@ -1,6 +1,6 @@
 ﻿using CatShopSolution.Data.Configurations;
 using CatShopSolution.Data.Entity;
-using CatShopSolution.Data.Extentions;
+using CatShopSolution.Data.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -34,9 +34,11 @@ namespace CatShopSolution.Data.EF
             modelBuilder.ApplyConfiguration(new PromotionConfiguration());
             modelBuilder.ApplyConfiguration(new TransactionConfiguration());
 
-
+            modelBuilder.ApplyConfiguration(new ProductImageConfiguration());
+            modelBuilder.ApplyConfiguration(new SlideConfiguration());
             modelBuilder.ApplyConfiguration(new AppUserConfiguration());
             modelBuilder.ApplyConfiguration(new AppRoleConfiguration());
+          
 
             modelBuilder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
             modelBuilder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });
@@ -48,6 +50,7 @@ namespace CatShopSolution.Data.EF
             //Data seeding
             modelBuilder.Seed();
             //base.OnModelCreating(modelBuilder);
+
         }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }

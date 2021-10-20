@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CatShopSolution.Data.Configurations
 {
-    public class AppRoleConfiguration : IEntityTypeConfiguration<AppRole>
+   public class AppRoleConfiguration:IEntityTypeConfiguration<AppRole>
     {
         public void Configure(EntityTypeBuilder<AppRole> builder)
         {

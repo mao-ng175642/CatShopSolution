@@ -16,7 +16,8 @@ namespace CatShopSolution.Data.Configurations
             builder.HasOne(t => t.Product).WithMany(pc => pc.ProductInCategories)
                 .HasForeignKey(pc => pc.ProductId);
 
-            builder.HasOne(t => t.Category).WithMany(pc => pc.ProductInCategories).HasForeignKey(pc => pc.CategoryId);
+            builder.HasOne(t => t.Category).WithMany(pc => pc.ProductInCategories)
+                .HasForeignKey(pc => pc.CategoryId);
         }
     }
 }
