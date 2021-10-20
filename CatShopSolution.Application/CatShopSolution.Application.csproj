@@ -4,4 +4,16 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.1" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatShopSolution.Data\CatShopSolution.Data.csproj" />
+    <ProjectReference Include="..\CatShopSolution.Utilitils\CatShopSolution.Utilitils.csproj" />
+    <ProjectReference Include="..\CatShopSolution.ViewModels\CatShopSolution.ViewModels.csproj" />
+  </ItemGroup>
+
 </Project>

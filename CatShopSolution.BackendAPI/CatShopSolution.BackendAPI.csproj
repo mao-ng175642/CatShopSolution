@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatShopSolution.Application\CatShopSolution.Application.csproj" />
+    <ProjectReference Include="..\CatShopSolution.Data\CatShopSolution.Data.csproj" />
+    <ProjectReference Include="..\CatShopSolution.Utilitils\CatShopSolution.Utilitils.csproj" />
+    <ProjectReference Include="..\CatShopSolution.ViewModels\CatShopSolution.ViewModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\user-content\" />
+  </ItemGroup>
+
+</Project>
