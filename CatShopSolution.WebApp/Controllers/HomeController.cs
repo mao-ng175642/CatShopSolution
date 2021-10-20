@@ -6,20 +6,31 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 
 namespace CatShopSolution.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IConfiguration configuration;
+        public HomeController(IConfiguration config)
         {
-            _logger = logger;
-        }
+            this.configuration = config;
 
+        }
         public IActionResult Index()
         {
+            string connectionstring = configuration.GetConnectionString("DefaultConnectionString");
+            SqlConnection connection = new SqlConnection(connectionstring);
+
+            connection.Open();
+            SqlCommand com = new SqlCommand("Select count(*) from UserLogin",connection);
+            var count = (int)com.ExecuteScalar();
+
+            ViewData["TotalData"] = count;
+
+            connection.Close();
             return View();
         }
 
