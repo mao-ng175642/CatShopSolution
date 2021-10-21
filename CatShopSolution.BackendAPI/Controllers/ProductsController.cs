@@ -3,6 +3,7 @@ using CatShopSolution.Application.Products;
 using CatShopSolution.Application.Products.Dtos;
 using CatShopSolution.ViewModels.Catalog.ProductImage;
 using CatShopSolution.ViewModels.Catalog.Products;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -14,6 +15,7 @@ namespace CatShopSolution.BackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly IPublicProductService _publicProductService;
