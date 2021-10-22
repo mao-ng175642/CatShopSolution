@@ -5,6 +5,8 @@ using CatShopSolution.Application.Products.Dtos;
 using CatShopSolution.Application.System.Users;
 using CatShopSolution.Data.EF;
 using CatShopSolution.Data.Entity;
+using CatShopSolution.ViewModels.System.Users;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -53,7 +55,8 @@ namespace CatShopSolution.BackendAPI
             services.AddTransient<IUserService, UserService>();
 
 
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(
+                fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>());
 
             services.AddSwaggerGen(x =>
             {

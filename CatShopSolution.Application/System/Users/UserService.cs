@@ -69,7 +69,7 @@ namespace CatShopSolution.Application.System.Users
                 PhoneNumber = request.PhoneNumber,
                 Dob = request.Dob,
             };
-            var result = await _userManager.CreateAsync(user, request.PassWord);
+            var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
                 return false;
