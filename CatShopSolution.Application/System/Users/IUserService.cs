@@ -1,4 +1,5 @@
-﻿using CatShopSolution.ViewModels.System.Users;
+﻿using CatShopSolution.ViewModels.Common;
+using CatShopSolution.ViewModels.System.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,5 +11,6 @@ namespace CatShopSolution.Application.System.Users
     {      
         Task<string> Authencate(LoginRequest request);
         Task<bool> Register(RegisterRequest request);
+        Task<PagedResult<UserVm>> getUserPaging(GetUserPagingRequest request);
     }
 }

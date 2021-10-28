@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CatShopSolution.Application.Catalog.Products
 {
-    public interface IManageProductService
+    public interface IProductService
     {
         Task<int> Create(ProductCreateRequest request);
 
@@ -30,5 +30,7 @@ namespace CatShopSolution.Application.Catalog.Products
         Task<int> UpdateImage(int imageId, ProductImageUpdateRequest productImage);
         Task<List<ProductImageViewModel>> GetListImage(int productId);
         Task<ProductImageViewModel> GetImageById(int imageId);
+        Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request);
+
     }
 }

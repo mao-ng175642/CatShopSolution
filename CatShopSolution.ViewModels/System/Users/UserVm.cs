@@ -4,7 +4,13 @@ using System.Text;
 
 namespace CatShopSolution.ViewModels.System.Users
 {
-    class UserVm
+    public class UserVm
     {
+        public Guid Id { set; get; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string PhoneNumber { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
     }
 }

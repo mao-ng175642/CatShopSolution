@@ -18,23 +18,31 @@ using CatShopSolution.ViewModels.Catalog.ProductImage;
 
 namespace CatShopSolution.Application.Catalog.Products.Dtos
 {
-    public class ManageProductService : IManageProductService
+    public class ProductService : IProductService
     {
         private readonly CatShopDbContext _dbContext;
         private readonly IStorageService _storageService;
-        public ManageProductService(CatShopDbContext dbContext, IStorageService storageService)
+        public ProductService(CatShopDbContext dbContext, IStorageService storageService)
         {
             _dbContext = dbContext;
             _storageService = storageService;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
         public async Task AddViewcount(int productId)
         {
             var product = await _dbContext.Products.FindAsync(productId);
             product.ViewCount += 1;
             await _dbContext.SaveChangesAsync();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<int> Create(ProductCreateRequest request)
         {
             var product = new Product()
@@ -143,7 +151,11 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             return pagedResult;
 
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<int> Update(ProductUpdateRequest request)
         {
             var product = await _dbContext.Products.FindAsync(request.Id);
@@ -174,7 +186,12 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             }
             return await _dbContext.SaveChangesAsync();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="newPrice"></param>
+        /// <returns></returns>
         public async Task<bool> UpdatePrice(int productId, decimal newPrice)
         {
             var product = await _dbContext.Products.FindAsync(productId);
@@ -182,7 +199,12 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             product.Price = newPrice;
             return await _dbContext.SaveChangesAsync() > 0;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="addedQuantity"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateStock(int productId, int addedQuantity)
         {
             var product = await _dbContext.Products.FindAsync(productId);
@@ -190,12 +212,12 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             product.Stock += addedQuantity;
             return await _dbContext.SaveChangesAsync() > 0;
         }
-/// <summary>
-/// Get product  by id with languageId
-/// </summary>
-/// <param name="productId"></param>
-/// <param name="languageId"></param>
-/// <returns></returns>
+        /// <summary>
+        /// Get product  by id with languageId
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="languageId"></param>
+        /// <returns></returns>
         public async Task<ProductViewModel> GetById(int productId,string languageId)
         {
             var product = await _dbContext.Products.FindAsync(productId);
@@ -219,6 +241,11 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             };
             return productViewModel;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
         public async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
@@ -226,7 +253,12 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
             return fileName;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<int> AddImage(int productId, ProductImageCreateRequest request)
         {
             var productImage = new ProductImage()
@@ -246,7 +278,11 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
              await _dbContext.SaveChangesAsync();
             return productImage.Id;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageId"></param>
+        /// <returns></returns>
         public async Task<int> RemoveImage( int imageId)
         {
             var productImage = await _dbContext.ProductImages.FindAsync(imageId);
@@ -258,6 +294,12 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             return await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public async Task<int> UpdateImage( int imageId, ProductImageUpdateRequest request)
         {
             var productImage = await _dbContext.ProductImages.FindAsync(imageId);
@@ -274,6 +316,11 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             return await _dbContext.SaveChangesAsync();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
         public async Task<List<ProductImageViewModel>> GetListImage(int productId)
         {
             return await _dbContext.ProductImages.Where(x => x.ProductId == productId)
@@ -289,6 +336,11 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                 }).ToListAsync();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imageId"></param>
+        /// <returns></returns>
         public  async Task<ProductImageViewModel> GetImageById(int imageId)
         {
             var image = await _dbContext.ProductImages.FindAsync(imageId);
@@ -308,6 +360,57 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             };
             return viewModel;
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="languageId"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        public async Task<PagedResult<ProductViewModel>> GetAllByCategoryId(string languageId, GetPublicProductPagingRequest request)
+        {
+            var query = from p in _dbContext.Products
+                        join pt in _dbContext.ProductTranslations on p.Id equals pt.ProductId
+                        join pic in _dbContext.ProductInCategories on p.Id equals pic.ProductId
+                        join c in _dbContext.Categories on pic.CategoryId equals c.Id
+                        where pt.LanguageId == languageId
+                        select new { p, pt, pic };
+            //2. Fillter
+            if (request.CategoryId.HasValue && request.CategoryId.Value > 0)
+            {
+                query = query.Where(p => p.pic.CategoryId == request.CategoryId);
+            }
+            //3. Paging
+            int totalRow = await query.CountAsync();
+            var data = await query.Skip((request.PageIndex - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(x => new ProductViewModel()
+                {
+                    Id = x.p.Id,
+                    Name = x.pt.Name,
+                    DateCreated = x.p.DateCreated,
+                    Description = x.pt.Description,
+                    Details = x.pt.Description,
+                    LanguageId = x.pt.LanguageId,
+                    OriginalPrice = x.p.OriginalPrice,
+                    Price = x.p.Price,
+                    SeoAlias = x.pt.SeoAlias,
+                    SeoDescription = x.pt.SeoDescription,
+                    SeoTitle = x.pt.SeoTitle,
+                    Stock = x.p.Stock,
+                    ViewCount = x.p.ViewCount,
+
+                }).ToListAsync();
+            //4. Select and projection
+            var pagedResult = new PagedResult<ProductViewModel>()
+            {
+                TotalRecord = totalRow,
+                PageSize = request.PageSize,
+                PageIndex = request.PageIndex,
+                Item = data
+            };
+            return pagedResult;
         }
     }
 }

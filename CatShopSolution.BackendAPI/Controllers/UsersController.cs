@@ -23,7 +23,7 @@ namespace CatShopSolution.BackendAPI.Controllers
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromForm]LoginRequest request)
+        public async Task<IActionResult> Authenticate([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -33,20 +33,31 @@ namespace CatShopSolution.BackendAPI.Controllers
             if(string.IsNullOrEmpty(resultToken))
             {
                 return BadRequest("Username or password is incorrect");
-            }
-            return Ok(new { token = resultToken });
+            }       
+            return Ok( resultToken);
         }
-        [HttpPost("register")]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Resgister ([FromForm] RegisterRequest request)
+        public async Task<IActionResult> Resgister ([FromBody] RegisterRequest request)
         {
-            if (!ModelState.IsValid) { return BadRequest(); }
+            if (!ModelState.IsValid) 
+            {
+                return BadRequest(); 
+            }
             var result = await _userService.Register(request);
             if (!result)
             {
-                return BadRequest("Resgister  UnSuccessfull!");
+                return BadRequest("Resgister is UnSuccessfull!");
             }
             return Ok();
+        }
+
+        //http:localhost/api/users/paging?pageIndex=1&pageSize=10&keyword=
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaginf([FromQuery]GetUserPagingRequest request)
+        {
+            var lstUser = await _userService.getUserPaging(request);
+            return Ok(lstUser);
         }
     }
 }

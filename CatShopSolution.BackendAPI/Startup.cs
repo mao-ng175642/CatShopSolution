@@ -1,7 +1,6 @@
 using CatShopSolution.Application.Catalog.Products;
 using CatShopSolution.Application.Catalog.Products.Dtos;
 using CatShopSolution.Application.Common;
-using CatShopSolution.Application.Products.Dtos;
 using CatShopSolution.Application.System.Users;
 using CatShopSolution.Data.EF;
 using CatShopSolution.Data.Entity;
@@ -40,14 +39,14 @@ namespace CatShopSolution.BackendAPI
 
             services.AddDbContext<CatShopDbContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("CatShopSolutionDb")));
+
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<CatShopDbContext>()
                 .AddDefaultTokenProviders();
 
             //Declare DI 
             services.AddTransient<IStorageService, FileStorageService>();
-            services.AddTransient<IPublicProductService, PublicProductService>();
-            services.AddTransient<IManageProductService, ManageProductService>();
+            services.AddTransient<IProductService, ProductService>();
 
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
