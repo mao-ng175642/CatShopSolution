@@ -9,10 +9,11 @@ namespace CatShopSolution.Admin.Services
 {
     public interface IUserAPIClient
     {
-        Task<string> Authenticate(LoginRequest request);
-        Task<PagedResult<UserVm>> GetUserPagings(GetUserPagingRequest request);
-
-        Task<bool> RegisterUser(RegisterRequest registerRequest);
-
+        Task<ApiResult<string>> Authenticate(LoginRequest request);
+        Task<ApiResult<PagedResult<UserVm>>> GetUserPagings(GetUserPagingRequest request);
+        Task<ApiResult<bool>> RegisterUser(RegisterRequest registerRequest);
+        Task<ApiResult<bool>> UpdateUser(Guid id, UserUpdateRequest request);
+        Task<ApiResult<UserVm>> GetById(Guid id);
+        Task<ApiResult<bool>> Delete(Guid id);
     }
 }

@@ -26,19 +26,22 @@ namespace CatShopSolution.Admin.Controllers
             _userAPIClient = userAPIClient;
             _configuration = configuration;
         }
-        public  async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 10)
+        public  async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5)
         {
-            var sessions = HttpContext.Session.GetString("Token");
-
             var request = new GetUserPagingRequest()
             {
-                Bearer = sessions,
                 Keyword = keyword,
                 PageIndex = pageIndex,
                 PageSize = pageSize
             };
             var data = await _userAPIClient.GetUserPagings(request);
-            return View(data);
+            return View(data.ResultObj);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Details(Guid id)         
+        {
+            var user = await _userAPIClient.GetById(id);
+            return View(user.ResultObj);
         }
         [HttpGet]
         public IActionResult Create()
@@ -52,13 +55,69 @@ namespace CatShopSolution.Admin.Controllers
                 return View();
 
             var result = await _userAPIClient.RegisterUser(request);
-            if (result)
+            if (result.IsSuccessed)
                 return RedirectToAction("Index","User");
 
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var result = await _userAPIClient.GetById(id);
+            if (result.IsSuccessed)
+            {
+                var user = result.ResultObj;
+                var updateRequest = new UserUpdateRequest()
+                {
+                    Dob = user.Dob,
+                    Email = user.Email,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Id = id
+                };
+                return View(updateRequest);
+            }
+            return RedirectToAction("Error", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userAPIClient.UpdateUser(request.Id, request);
+            if (result.IsSuccessed)
+                return RedirectToAction("Index");
+
+            ModelState.AddModelError("", result.Message);
+            return View(request);
+        }
+        [HttpGet]
+        public IActionResult Delete(Guid id)
+        {
+            return View(new UserDeleteRequest()
+            {
+                Id = id
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserDeleteRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userAPIClient.Delete(request.Id);
+            if (result.IsSuccessed)
+                return RedirectToAction("Index");
+
+            ModelState.AddModelError("", result.Message);
             return View(request);
         }
 
-       
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
