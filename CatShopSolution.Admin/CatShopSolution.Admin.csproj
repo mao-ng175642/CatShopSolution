@@ -14,6 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CatShopSolution.Application\CatShopSolution.Application.csproj" />
+    <ProjectReference Include="..\CatShopSolution.Utilitils\CatShopSolution.Utilitils.csproj" />
     <ProjectReference Include="..\CatShopSolution.ViewModels\CatShopSolution.ViewModels.csproj" />
   </ItemGroup>
 

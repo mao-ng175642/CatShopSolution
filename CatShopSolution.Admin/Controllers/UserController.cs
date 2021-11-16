@@ -1,4 +1,5 @@
 ﻿using CatShopSolution.Admin.Services;
+using CatShopSolution.ViewModels.Common;
 using CatShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -21,12 +22,16 @@ namespace CatShopSolution.Admin.Controllers
     {
         private readonly IUserAPIClient _userAPIClient;
         private readonly IConfiguration _configuration;
-        public UserController(IUserAPIClient userAPIClient,IConfiguration configuration)
+        private readonly IRoleAPIClient _roleAPIClient;
+        public UserController(IUserAPIClient userAPIClient,
+             IRoleAPIClient roleAPIClient
+            ,IConfiguration configuration)
         {
             _userAPIClient = userAPIClient;
             _configuration = configuration;
+            _roleAPIClient = roleAPIClient;
         }
-        public  async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(string keyword, int pageIndex = 1, int pageSize = 5)
         {
             var request = new GetUserPagingRequest()
             {
@@ -35,10 +40,15 @@ namespace CatShopSolution.Admin.Controllers
                 PageSize = pageSize
             };
             var data = await _userAPIClient.GetUserPagings(request);
+            ViewBag.Keyword = keyword;
+            if (TempData["result"] != null)
+            {
+                ViewBag.SuccessMsg = TempData["result"];
+            }
             return View(data.ResultObj);
         }
         [HttpGet]
-        public async Task<IActionResult> Details(Guid id)         
+        public async Task<IActionResult> Details(Guid id)
         {
             var user = await _userAPIClient.GetById(id);
             return View(user.ResultObj);
@@ -56,8 +66,10 @@ namespace CatShopSolution.Admin.Controllers
 
             var result = await _userAPIClient.RegisterUser(request);
             if (result.IsSuccessed)
-                return RedirectToAction("Index","User");
-
+            {
+                TempData["result"] = "Thêm mới người dùng thành công";
+                return RedirectToAction("Index");
+            }
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
@@ -90,8 +102,10 @@ namespace CatShopSolution.Admin.Controllers
 
             var result = await _userAPIClient.UpdateUser(request.Id, request);
             if (result.IsSuccessed)
+            {
+                TempData["result"] = "Cập nhật người dùng thành công";
                 return RedirectToAction("Index");
-
+            }
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
@@ -112,8 +126,10 @@ namespace CatShopSolution.Admin.Controllers
 
             var result = await _userAPIClient.Delete(request.Id);
             if (result.IsSuccessed)
+            {
+                TempData["result"] = "Xóa người dùng thành công";
                 return RedirectToAction("Index");
-
+            }
             ModelState.AddModelError("", result.Message);
             return View(request);
         }
@@ -123,9 +139,53 @@ namespace CatShopSolution.Admin.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Remove("Token");
-            return RedirectToAction("Login", "User");
+            return RedirectToAction("Index", "Login");
         }
-       
 
+        [HttpGet]
+        public async Task<IActionResult> RoleAssign(Guid id)
+        {
+            var roleAssignRequest = await GetRoleAssignRequest(id);
+            return View(roleAssignRequest);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RoleAssign(RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return View();
+
+            var result = await _userAPIClient.RoleAssign(request.Id, request);
+
+            if (result.IsSuccessed)
+            {
+                TempData["result"] = "Cập nhật quyền thành công";
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("", result.Message);
+            var roleAssignRequest = await GetRoleAssignRequest(request.Id);
+
+            return View(roleAssignRequest);
+        }
+
+        private async Task<RoleAssignRequest> GetRoleAssignRequest(Guid id)
+        {
+            var userObj = await _userAPIClient.GetById(id);
+            var roleObj = await _roleAPIClient.GetAll();
+            var roleAssignRequest = new RoleAssignRequest();
+            foreach (var role in roleObj.ResultObj)
+            {
+                roleAssignRequest.Roles.Add(new SelectItem()
+                {
+                    Id = role.Id.ToString(),
+                    Name = role.Name,
+                    Selected = userObj.ResultObj.Roles.Contains(role.Name)
+                });
+            }
+            return roleAssignRequest;
+        }
     }
+
 }
+

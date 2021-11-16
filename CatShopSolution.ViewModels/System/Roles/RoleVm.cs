@@ -4,7 +4,11 @@ using System.Text;
 
 namespace CatShopSolution.ViewModels.System.Roles
 {
-    class RoleVm
+    public  class RoleVm
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+
     }
 }
