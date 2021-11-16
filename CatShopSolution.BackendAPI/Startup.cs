@@ -1,6 +1,8 @@
 using CatShopSolution.Application.Catalog.Products;
 using CatShopSolution.Application.Catalog.Products.Dtos;
 using CatShopSolution.Application.Common;
+using CatShopSolution.Application.System.Languages;
+using CatShopSolution.Application.System.Roles;
 using CatShopSolution.Application.System.Users;
 using CatShopSolution.Data.EF;
 using CatShopSolution.Data.Entity;
@@ -47,11 +49,13 @@ namespace CatShopSolution.BackendAPI
             //Declare DI 
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IProductService, ProductService>();
-
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+            services.AddTransient<ILanguageService, LanguageService>();
+            services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
+
 
 
             services.AddControllers().AddFluentValidation(

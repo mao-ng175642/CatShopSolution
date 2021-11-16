@@ -139,11 +139,11 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
 
-                }).ToListAsync();
+                }).OrderBy(x=>x.Name).ToListAsync();
             //4. Select and projection
             var pagedResult = new PagedResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
+                TotalRecords = totalRow,
                 PageSize = request.PageSize,
                 PageIndex = request.PageIndex,
                 Item = data
@@ -405,9 +405,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             //4. Select and projection
             var pagedResult = new PagedResult<ProductViewModel>()
             {
-                TotalRecord = totalRow,
-                PageSize = request.PageSize,
-                PageIndex = request.PageIndex,
+                TotalRecords = totalRow,            
                 Item = data
             };
             return pagedResult;

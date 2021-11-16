@@ -1,10 +1,13 @@
-﻿using System;
+﻿using CatShopSolution.ViewModels.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CatShopSolution.ViewModels.System.Users
 {
-    class RoleAssignRequest
+    public class RoleAssignRequest
     {
+        public Guid Id { get; set; }
+        public List<SelectItem> Roles { get; set; } = new List<SelectItem>();
     }
 }

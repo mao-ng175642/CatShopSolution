@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CatShopSolution.ViewModels.Common
 {
-    public class PadingRequestBase : RequestBase
+    public class PadingRequestBase 
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }
