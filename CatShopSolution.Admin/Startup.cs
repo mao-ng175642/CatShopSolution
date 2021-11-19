@@ -49,7 +49,8 @@ namespace CatShopSolution.Admin
             services.AddTransient<IUserAPIClient, UserAPIClient>();
             services.AddTransient<IRoleAPIClient, RoleAPIClient>();
             services.AddTransient<ILanguageApiClient, LanguageApiClient>();
-
+            services.AddTransient<IProductApiClient, ProductApiClient>();
+            
             IMvcBuilder builder = services.AddRazorPages();
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 

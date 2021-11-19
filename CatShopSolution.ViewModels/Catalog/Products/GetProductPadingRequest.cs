@@ -9,6 +9,8 @@ namespace CatShopSolution.ViewModels.Catalog.Products
     {
         public string Keyword { get; set; }
 
-        public List<int> CategoryId { get; set; }
+        public List<int> CategoryIds { get; set; }
+
+        public string LanguageId { get; set; }
     }
 }
