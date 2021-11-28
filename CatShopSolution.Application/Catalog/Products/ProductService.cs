@@ -108,17 +108,19 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             //1. Select join
             var query = from p in _dbContext.Products
                         join pt in _dbContext.ProductTranslations on p.Id equals pt.ProductId
-                        join pic in _dbContext.ProductInCategories on p.Id equals pic.ProductId
-                        join c in _dbContext.Categories on pic.CategoryId equals c.Id
+                        join pic in _dbContext.ProductInCategories on p.Id equals pic.ProductId into ppic
+                        from pic in ppic.DefaultIfEmpty()
+                        join c in _dbContext.Categories on pic.CategoryId equals c.Id into picc
+                        from c in picc.DefaultIfEmpty()
                         where pt.LanguageId == request.LanguageId
                         select new { p, pt, pic };
             //2. filter
             if (!string.IsNullOrEmpty(request.Keyword))
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
 
-            if (request.CategoryIds != null && request.CategoryIds.Count > 0)
+            if (request.CategoryId != null && request.CategoryId != 0)
             {
-                query = query.Where(p => request.CategoryIds.Contains(p.pic.CategoryId));
+                query = query.Where(p => p.pic.CategoryId == request.CategoryId);
             }
 
             //3. Paging
@@ -140,7 +142,8 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                     SeoDescription = x.pt.SeoDescription,
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
-                    ViewCount = x.p.ViewCount
+                    ViewCount = x.p.ViewCount,
+   
                 }).ToListAsync();
 
             //4. Select and projection
@@ -224,8 +227,14 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         public async Task<ProductVm> GetById(int productId,string languageId)
         {
             var product = await _dbContext.Products.FindAsync(productId);
-            var productTranslation = await _dbContext.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId && x.LanguageId == languageId);
+            var productTranslation = await _dbContext.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
+             && x.LanguageId == languageId);
 
+            var categories = await (from c in _dbContext.Categories
+                                    join ct in _dbContext.CategoryTranslations on c.Id equals ct.CategoryId
+                                    join pic in _dbContext.ProductInCategories on c.Id equals pic.CategoryId
+                                    where pic.ProductId == productId && ct.LanguageId == languageId
+                                    select ct.Name).ToListAsync();
             var productViewModel = new ProductVm()
             {
                 Id = product.Id,
@@ -241,6 +250,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                 SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
                 Stock =product.Stock,
                 ViewCount = product.ViewCount,
+                Categories = categories
             };
             return productViewModel;
         }
@@ -412,6 +422,34 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                 Item = data
             };
             return pagedResult;
+        }
+        public async Task<ApiResult<bool>> CategoryAssign(int id, CategoryAssignRequest request)
+        {
+            var user = await _dbContext.Products.FindAsync(id);
+            if (user == null)
+            {
+                return new ApiErrorResult<bool>($"Sản phẩm với id {id} không tồn tại");
+            }
+            foreach (var category in request.Categories)
+            {
+                var productInCategory = await _dbContext.ProductInCategories
+                    .FirstOrDefaultAsync(x => x.CategoryId == int.Parse(category.Id)
+                    && x.ProductId == id);
+                if (productInCategory != null && category.Selected == false)
+                {
+                    _dbContext.ProductInCategories.Remove(productInCategory);
+                }
+                else if (productInCategory == null && category.Selected)
+                {
+                    await _dbContext.ProductInCategories.AddAsync(new ProductInCategory()
+                    {
+                        CategoryId = int.Parse(category.Id),
+                        ProductId = id
+                    });
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+            return new ApiSuccessResult<bool>();
         }
     }
 }

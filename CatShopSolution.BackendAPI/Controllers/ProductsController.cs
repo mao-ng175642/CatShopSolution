@@ -48,6 +48,7 @@ namespace CatShopSolution.BackendAPI.Controllers
         }
 
         [HttpPost]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult>Create([FromForm]ProductCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -140,7 +141,20 @@ namespace CatShopSolution.BackendAPI.Controllers
                 return BadRequest();
             return Ok(image);
         }
-        
+
+        [HttpPut("{id}/categories")]
+        public async Task<IActionResult> CategoryAssign(int id, [FromBody] CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _ProductService.CategoryAssign(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
     }
 }
