@@ -1,6 +1,4 @@
 ﻿using CatShopSolution.Application.Catalog.Products;
-using CatShopSolution.Application.Products;
-using CatShopSolution.Application.Products.Dtos;
 using CatShopSolution.ViewModels.Catalog.ProductImage;
 using CatShopSolution.ViewModels.Catalog.Products;
 using Microsoft.AspNetCore.Authorization;
@@ -18,41 +16,49 @@ namespace CatShopSolution.BackendAPI.Controllers
     [Authorize]
     public class ProductsController : ControllerBase
     {
-        private readonly IPublicProductService _publicProductService;
-        private readonly IManageProductService _mangeProductService;
-        public ProductsController(IPublicProductService publicProductService, IManageProductService manageProductService)
+        private readonly IProductService _ProductService;
+
+        public ProductsController( IProductService ProductService)
         {
-            _publicProductService = publicProductService;
-            _mangeProductService = manageProductService;
+            _ProductService = ProductService;
+          
         }     
         //http://localhost:port/products?pageIndex=1&pageSize=10&CategoryId=
-        [HttpGet("{languageId}")]
-        public async Task<IActionResult> GetAllPaging(string languageId,[FromQuery] GetPublicProductPagingRequest request)
+        //[HttpGet("{languageId}")]
+        //public async Task<IActionResult> GetAllPaging(string languageId,[FromQuery] GetPublicProductPagingRequest request)
+        //{
+        //    var products = await _ProductService.GetAllByCategoryId(languageId,request);
+        //    return Ok(products);
+        //}
+
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPadingRequest request)
         {
-            var products = await _publicProductService.GetAllByCategoryId(languageId,request);
+            var products = await _ProductService.GetAllPaging(request);
             return Ok(products);
         }
         //http://localhost:port/product/{productId}
         [HttpGet("{productId}/{languageId}")]
         public async Task<IActionResult> GetById (int productId,string languageId)
         {
-            var product = await _mangeProductService.GetById(productId,languageId);
+            var product = await _ProductService.GetById(productId,languageId);
             if (product == null)
                 return BadRequest("Cannot find product");
             return Ok(product);
         }
 
         [HttpPost]
+        [Consumes("multipart/form-data")]
         public async Task<IActionResult>Create([FromForm]ProductCreateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var productId = await _mangeProductService.Create(request);
+            var productId = await _ProductService.Create(request);
             if (productId == 0)
                 return BadRequest();
-            var product = await _mangeProductService.GetById(productId,request.LanguageId);
+            var product = await _ProductService.GetById(productId,request.LanguageId);
             return CreatedAtAction(nameof(GetById), new { id = productId } , product);
         }
         [HttpPut]
@@ -62,7 +68,7 @@ namespace CatShopSolution.BackendAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var affectedResult = await _mangeProductService.Update(request);
+            var affectedResult = await _ProductService.Update(request);
             if (affectedResult == 0)
                 return BadRequest();;
             return Ok();
@@ -72,7 +78,7 @@ namespace CatShopSolution.BackendAPI.Controllers
         [HttpDelete("productId")]
         public async Task<IActionResult> Delete(int productId )
         {
-            var affectedResult = await _mangeProductService.Delete(productId);
+            var affectedResult = await _ProductService.Delete(productId);
             if (affectedResult == 0)
                 return BadRequest(); ;
             return Ok();
@@ -81,7 +87,7 @@ namespace CatShopSolution.BackendAPI.Controllers
         [HttpPatch("{productId}/{newPrice}")]
         public async Task<IActionResult> UpdatePrice( int productId,decimal newPrice)
         {          
-            var isSuccess = await _mangeProductService.UpdatePrice(productId, newPrice);
+            var isSuccess = await _ProductService.UpdatePrice(productId, newPrice);
             if (!isSuccess)
                 return BadRequest(); ;
             return Ok();
@@ -95,12 +101,12 @@ namespace CatShopSolution.BackendAPI.Controllers
             {
                 return BadRequest();
             }
-            var imageId = await _mangeProductService.AddImage(productId, request);
+            var imageId = await _ProductService.AddImage(productId, request);
             if(imageId == 0)
             {
                 return BadRequest();
             }
-            var image = await _mangeProductService.GetImageById(imageId);
+            var image = await _ProductService.GetImageById(imageId);
             return CreatedAtAction(nameof(GetImageById),new { id = imageId }, image);
         }
         [HttpPut("{productId}/images/{imageId}")]
@@ -110,7 +116,7 @@ namespace CatShopSolution.BackendAPI.Controllers
             {
                 return BadRequest();
             }
-            var result = await _mangeProductService.UpdateImage(imageId, request);
+            var result = await _ProductService.UpdateImage(imageId, request);
             if (result == 0)
                 return BadRequest();
             return Ok();
@@ -122,7 +128,7 @@ namespace CatShopSolution.BackendAPI.Controllers
             {
                 return BadRequest();
             }
-            var result = await _mangeProductService.RemoveImage(imageId);
+            var result = await _ProductService.RemoveImage(imageId);
             if (result == 0)
                 return BadRequest();
             return Ok();
@@ -130,12 +136,25 @@ namespace CatShopSolution.BackendAPI.Controllers
         [HttpGet("{productId}/image/{imageId}")]
         public async Task<IActionResult> GetImageById(int productId,int imageId)
         {
-            var image = await _mangeProductService.GetImageById(imageId);
+            var image = await _ProductService.GetImageById(imageId);
             if (image == null)
                 return BadRequest();
             return Ok(image);
         }
-        
+
+        [HttpPut("{id}/categories")]
+        public async Task<IActionResult> CategoryAssign(int id, [FromBody] CategoryAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _ProductService.CategoryAssign(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
 
     }
 }

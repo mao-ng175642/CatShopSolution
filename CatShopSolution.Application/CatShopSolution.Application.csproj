@@ -18,9 +18,4 @@
     <ProjectReference Include="..\CatShopSolution.ViewModels\CatShopSolution.ViewModels.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="System\Languages\" />
-    <Folder Include="System\Roles\" />
-  </ItemGroup>
-
 </Project>
