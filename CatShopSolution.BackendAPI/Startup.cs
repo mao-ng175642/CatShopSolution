@@ -1,3 +1,4 @@
+using CatShopSolution.Application.Catalog.Categories;
 using CatShopSolution.Application.Catalog.Products;
 using CatShopSolution.Application.Catalog.Products.Dtos;
 using CatShopSolution.Application.Common;
@@ -49,6 +50,9 @@ namespace CatShopSolution.BackendAPI
             //Declare DI 
             services.AddTransient<IStorageService, FileStorageService>();
             services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+
+
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
