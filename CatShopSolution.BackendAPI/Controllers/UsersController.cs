@@ -23,30 +23,82 @@ namespace CatShopSolution.BackendAPI.Controllers
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromForm]LoginRequest request)
+        public async Task<IActionResult> Authenticate([FromBody]LoginRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
             var resultToken = await _userService.Authencate(request);
-            if(string.IsNullOrEmpty(resultToken))
+            if(string.IsNullOrEmpty(resultToken.ResultObj))
             {
                 return BadRequest("Username or password is incorrect");
-            }
-            return Ok(new { token = resultToken });
+            }       
+            return Ok( resultToken);
         }
-        [HttpPost("register")]
+        [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Resgister ([FromForm] RegisterRequest request)
+        public async Task<IActionResult> Resgister ([FromBody] RegisterRequest request)
         {
-            if (!ModelState.IsValid) { return BadRequest(); }
-            var result = await _userService.Register(request);
-            if (!result)
+            if (!ModelState.IsValid) 
             {
-                return BadRequest("Resgister  UnSuccessfull!");
+                return BadRequest(); 
+            }
+            var result = await _userService.Register(request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest("Resgister is UnSuccessfull!");
             }
             return Ok();
+        }
+
+        //PUT: http://localhost/api/users/id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UserUpdateRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.Update(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+
+        [HttpPut("{id}/roles")]
+        public async Task<IActionResult> RoleAssign(Guid id, [FromBody]RoleAssignRequest request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _userService.RoleAssign(id, request);
+            if (!result.IsSuccessed)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        //http:localhost/api/users/paging?pageIndex=1&pageSize=10&keyword=
+        [HttpGet("paging")]
+        public async Task<IActionResult> GetAllPaginf([FromQuery]GetUserPagingRequest request)
+        {
+            var lstUser = await _userService.getUserPaging(request);
+            return Ok(lstUser);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var user = await _userService.GetById(id);
+            return Ok(user);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _userService.Delete(id);
+            return Ok(result);
         }
     }
 }

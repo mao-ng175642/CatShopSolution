@@ -4,7 +4,8 @@ using System.Text;
 
 namespace CatShopSolution.ViewModels.System.Users
 {
-    class UserDeleteRequest
+    public class UserDeleteRequest
     {
+        public Guid Id { get; set; }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CatShopSolution.ViewModels.Catalog.Categories;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace CatShopSolution.ViewModels.Catalog.Products
 {
-    public class ProductViewModel
+    public class ProductVm
     {
         public int Id { set; get; }
         public decimal Price { set; get; }
@@ -19,10 +20,12 @@ namespace CatShopSolution.ViewModels.Catalog.Products
         public string SeoDescription { set; get; }
         public string SeoTitle { set; get; }
 
-        public List<string> Categories { get; set; }
+        //public List<string> Categories { get; set; }
         public string ThumbnailImage { get; set; }
         public string SeoAlias { get; set; }
         public string LanguageId { set; get; }
+
+        public List<string> Categories { get; set; } = new List<string>();
 
     }
 }

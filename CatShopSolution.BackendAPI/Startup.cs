@@ -1,7 +1,9 @@
+using CatShopSolution.Application.Catalog.Categories;
 using CatShopSolution.Application.Catalog.Products;
 using CatShopSolution.Application.Catalog.Products.Dtos;
 using CatShopSolution.Application.Common;
-using CatShopSolution.Application.Products.Dtos;
+using CatShopSolution.Application.System.Languages;
+using CatShopSolution.Application.System.Roles;
 using CatShopSolution.Application.System.Users;
 using CatShopSolution.Data.EF;
 using CatShopSolution.Data.Entity;
@@ -40,19 +42,24 @@ namespace CatShopSolution.BackendAPI
 
             services.AddDbContext<CatShopDbContext>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("CatShopSolutionDb")));
+
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<CatShopDbContext>()
                 .AddDefaultTokenProviders();
 
             //Declare DI 
             services.AddTransient<IStorageService, FileStorageService>();
-            services.AddTransient<IPublicProductService, PublicProductService>();
-            services.AddTransient<IManageProductService, ManageProductService>();
+            services.AddTransient<IProductService, ProductService>();
+            services.AddTransient<ICategoryService, CategoryService>();
+
 
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<RoleManager<AppRole>, RoleManager<AppRole>>();
+            services.AddTransient<ILanguageService, LanguageService>();
+            services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
+
 
 
             services.AddControllers().AddFluentValidation(
