@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CatShopSolution.ApiIntegration\CatShopSolution.ApiIntegration.csproj" />
     <ProjectReference Include="..\CatShopSolution.Application\CatShopSolution.Application.csproj" />
     <ProjectReference Include="..\CatShopSolution.Data\CatShopSolution.Data.csproj" />
     <ProjectReference Include="..\CatShopSolution.Utilitils\CatShopSolution.Utilitils.csproj" />

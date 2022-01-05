@@ -1,4 +1,4 @@
-﻿using CatShopSolution.Admin.Services;
+﻿using CatShopSolution.ApiIntegration;
 using CatShopSolution.Utilitils.Constants;
 using CatShopSolution.ViewModels.Catalog.Products;
 using CatShopSolution.ViewModels.Common;
@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 

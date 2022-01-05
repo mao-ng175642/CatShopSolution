@@ -139,7 +139,7 @@ namespace CatShopSolution.Application.System.Users
                 Dob = request.Dob,
             };
             var result = await _userManager.CreateAsync(user, request.Password);
-            if (!result.Succeeded)
+            if (result.Succeeded)
             {
                 return new ApiSuccessResult<bool>();
             }
