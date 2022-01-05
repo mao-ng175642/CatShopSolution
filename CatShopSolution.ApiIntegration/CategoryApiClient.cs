@@ -8,7 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace CatShopSolution.Admin.Services
+namespace CatShopSolution.ApiIntegration
 {
     public class CategoryApiClient :BaseApiClient, ICategoryApiClient
     {

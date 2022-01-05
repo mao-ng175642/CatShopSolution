@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CatShopSolution.Application\CatShopSolution.Application.csproj" />
+    <ProjectReference Include="..\CatShopSolution.Utilitils\CatShopSolution.Utilitils.csproj" />
+    <ProjectReference Include="..\CatShopSolution.ViewModels\CatShopSolution.ViewModels.csproj" />
+  </ItemGroup>
+
+</Project>

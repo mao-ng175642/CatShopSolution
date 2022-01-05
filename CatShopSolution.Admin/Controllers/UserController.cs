@@ -1,4 +1,4 @@
-﻿using CatShopSolution.Admin.Services;
+﻿using CatShopSolution.ApiIntegration;
 using CatShopSolution.ViewModels.Common;
 using CatShopSolution.ViewModels.System.Users;
 using Microsoft.AspNetCore.Authentication;

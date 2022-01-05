@@ -1,12 +1,10 @@
 ﻿using CatShopSolution.Data.Configurations;
 using CatShopSolution.Data.Entity;
-using CatShopSolution.Data.Extensions;
+using CatShopSolution.Data.Extentions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CatShopSolution.Data.EF
 {

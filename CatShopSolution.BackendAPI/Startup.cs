@@ -4,6 +4,7 @@ using CatShopSolution.Application.Catalog.Products.Dtos;
 using CatShopSolution.Application.Common;
 using CatShopSolution.Application.System.Languages;
 using CatShopSolution.Application.System.Roles;
+using CatShopSolution.Application.System.SlideService;
 using CatShopSolution.Application.System.Users;
 using CatShopSolution.Data.EF;
 using CatShopSolution.Data.Entity;
@@ -59,7 +60,7 @@ namespace CatShopSolution.BackendAPI
             services.AddTransient<ILanguageService, LanguageService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IUserService, UserService>();
-
+            services.AddTransient<ISlideService, SlideService>();
 
 
             services.AddControllers().AddFluentValidation(

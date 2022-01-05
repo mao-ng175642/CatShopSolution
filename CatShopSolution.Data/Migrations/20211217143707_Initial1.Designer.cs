@@ -4,14 +4,16 @@ using CatShopSolution.Data.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CatShopSolution.Data.Migrations
 {
     [DbContext(typeof(CatShopDbContext))]
-    partial class CatShopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211217143707_Initial1")]
+    partial class Initial1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -78,7 +80,7 @@ namespace CatShopSolution.Data.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "dbacf6d5-a3ce-4f97-ae94-9ca5bc38fd3c",
+                            ConcurrencyStamp = "5110dded-045e-43a3-a90c-d52fb4988fbe",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "admin"
@@ -155,8 +157,8 @@ namespace CatShopSolution.Data.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "09c82481-458e-42cf-86ae-d8a65e22dc95",
-                            Dob = new DateTime(2021, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "dbabe0cd-6a91-42ed-b441-393d0d369ca3",
+                            Dob = new DateTime(2021, 10, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "mao.ng175642@sis.hust.edu.vn",
                             EmailConfirmed = true,
                             FirstName = "Mao",
@@ -164,7 +166,7 @@ namespace CatShopSolution.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "mao.ng175642@sis.hust.edu.vn",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMAcz9cKXmshb1Fhkb2Fi+a0TWsjv3gyzUjrC7aHxDyJKxlORpN7JlxGX/Ct2oCMwA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDa0Oa+bpoEGrH1uqJTwcbVmpXWEimfvMGrAFlccs9Roo89XivMhPOGUkcbsAV6Jdg==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -520,7 +522,7 @@ namespace CatShopSolution.Data.Migrations
                         new
                         {
                             Id = 1,
-                            DateCreated = new DateTime(2021, 12, 27, 22, 4, 58, 235, DateTimeKind.Local).AddTicks(6076),
+                            DateCreated = new DateTime(2021, 12, 17, 21, 37, 6, 875, DateTimeKind.Local).AddTicks(8079),
                             OriginalPrice = 100000m,
                             Price = 200000m,
                             Stock = 0,
@@ -746,68 +748,6 @@ namespace CatShopSolution.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Slides");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                            Image = "/themes/images/carousel/1.png",
-                            Name = "Second Thumbnail label",
-                            SortOrder = 1,
-                            Status = 1,
-                            Url = "#"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                            Image = "/themes/images/carousel/2.png",
-                            Name = "Second Thumbnail label",
-                            SortOrder = 2,
-                            Status = 1,
-                            Url = "#"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                            Image = "/themes/images/carousel/3.png",
-                            Name = "Second Thumbnail label",
-                            SortOrder = 3,
-                            Status = 1,
-                            Url = "#"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                            Image = "/themes/images/carousel/4.png",
-                            Name = "Second Thumbnail label",
-                            SortOrder = 4,
-                            Status = 1,
-                            Url = "#"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                            Image = "/themes/images/carousel/5.png",
-                            Name = "Second Thumbnail label",
-                            SortOrder = 5,
-                            Status = 1,
-                            Url = "#"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Description = "Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.",
-                            Image = "/themes/images/carousel/6.png",
-                            Name = "Second Thumbnail label",
-                            SortOrder = 6,
-                            Status = 1,
-                            Url = "#"
-                        });
                 });
 
             modelBuilder.Entity("CatShopSolution.Data.Entity.Transaction", b =>

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CatShopSolution.Admin.Services
+namespace CatShopSolution.ApiIntegration
 {
     public interface IProductApiClient
     {
@@ -16,6 +16,9 @@ namespace CatShopSolution.Admin.Services
 
         Task<ProductVm> GetById(int id, string languageId);
 
+        Task<List<ProductVm>> GetFeaturedProducts(string languageId, int take);
+        Task<List<ProductVm>> GetLatestProducts(string languageId, int take);
 
+        
     }
 }

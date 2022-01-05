@@ -14,7 +14,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatShopSolution.Admin.Services
+namespace CatShopSolution.ApiIntegration
 {  
     public class ProductApiClient : BaseApiClient, IProductApiClient
     {
@@ -105,5 +105,17 @@ namespace CatShopSolution.Admin.Services
 
             return data;
         }
+
+        public async Task<List<ProductVm>> GetFeaturedProducts(string languageId, int take)
+        {
+            var data = await GetListAsync<ProductVm>($"/api/products/featured/{languageId}/{take}");
+            return data;
+        }
+        public async Task<List<ProductVm>> GetLatestProducts(string languageId, int take)
+        {
+            var data = await GetListAsync<ProductVm>($"/api/products/latest/{languageId}/{take}");
+            return data;
+        }
+
     }
 }

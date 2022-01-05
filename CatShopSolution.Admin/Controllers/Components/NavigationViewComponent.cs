@@ -1,11 +1,8 @@
 ﻿using CatShopSolution.Admin.Models;
-using CatShopSolution.Admin.Services;
+using CatShopSolution.ApiIntegration;
 using CatShopSolution.Utilitils.Constants;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CatShopSolution.Admin.Controllers.Components

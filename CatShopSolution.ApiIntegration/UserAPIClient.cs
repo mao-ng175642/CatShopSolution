@@ -11,7 +11,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CatShopSolution.Admin.Services
+namespace CatShopSolution.ApiIntegration
 {
     public class UserAPIClient : IUserAPIClient
     {
@@ -83,7 +83,7 @@ namespace CatShopSolution.Admin.Services
 
             var response = await client.PostAsync($"/api/users", httpContent);
             var result = await response.Content.ReadAsStringAsync();
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
                 return JsonConvert.DeserializeObject<ApiSuccessResult<bool>>(result);
             return JsonConvert.DeserializeObject<ApiErrorResult<bool>>(result);
         }
