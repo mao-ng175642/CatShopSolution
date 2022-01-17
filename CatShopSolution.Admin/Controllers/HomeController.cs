@@ -44,7 +44,7 @@ namespace CatShopSolution.Admin.Controllers
             HttpContext.Session.SetString(SystemConstants.AppSettings.DefaultLanguageId,
                 viewModel.CurrentLanguageId);
 
-            return RedirectToAction("Index");
+            return Redirect(viewModel.ReturnUrl);
         }
     }
 }

@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using System.IO;
 using CatShopSolution.Application.Common;
 using CatShopSolution.ViewModels.Catalog.ProductImage;
+using CatShopSolution.Utilitils.Constants;
 
 namespace CatShopSolution.Application.Catalog.Products.Dtos
 {
@@ -45,16 +46,13 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         /// <returns></returns>
         public async Task<int> Create(ProductCreateRequest request)
         {
-            var product = new Product()
+            var languages = _dbContext.Languages;
+            var translations = new List<ProductTranslation>();
+            foreach (var language in languages)
             {
-                Price = request.Price,
-                OriginalPrice = request.OriginalPrice,
-                Stock = request.Stock,
-                ViewCount = 0,
-                DateCreated = DateTime.Now,
-                ProductTranslations = new List<ProductTranslation>()
+                if (language.Id == request.LanguageId)
                 {
-                    new ProductTranslation()
+                    translations.Add(new ProductTranslation()
                     {
                         Name = request.Name,
                         Description = request.Description,
@@ -63,12 +61,30 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                         SeoAlias = request.SeoAlias,
                         SeoTitle = request.SeoTitle,
                         LanguageId = request.LanguageId
-                    }
+                    });
                 }
+                else
+                {
+                    translations.Add(new ProductTranslation()
+                    {
+                        Name = SystemConstants.ProductConstants.NA,
+                        Description = SystemConstants.ProductConstants.NA,
+                        SeoAlias = SystemConstants.ProductConstants.NA,
+                        LanguageId = language.Id
+                    });
+                }
+            }
+            var product = new Product()
+            {
+                Price = request.Price,
+                OriginalPrice = request.OriginalPrice,
+                Stock = request.Stock,
+                ViewCount = 0,
+                DateCreated = DateTime.Now,
+                ProductTranslations = translations
             };
-
             //Save image
-            if (request.ThumbNailImage != null)
+            if (request.ThumbnailImage != null)
             {
                 product.ProductImages = new List<ProductImage>()
                 {
@@ -76,8 +92,9 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                     {
                         Caption = "Thumbnail image",
                         DateCreated = DateTime.Now,
-                        FileSize = request.ThumbNailImage.Length,
-                        ImagePath = await this.SaveFile(request.ThumbNailImage),
+                        FileSize = request.ThumbnailImage.Length,
+                        ImagePath = await this.SaveFile(request.ThumbnailImage),
+                        IsDefault = true,
                         SortOrder = 1
                     }
                 };
@@ -94,13 +111,16 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         public async Task<int> Delete(int productId)
         {
             var product = await _dbContext.Products.FindAsync(productId);
-            if (product == null) throw new CatShopException($"Can not find that product with id: {productId}");
+            if (product == null) throw new CatShopException($"Cannot find a product: {productId}");
+
             var images = _dbContext.ProductImages.Where(i => i.ProductId == productId);
             foreach (var image in images)
             {
                 await _storageService.DeleteFileAsync(image.ImagePath);
             }
+
             _dbContext.Products.Remove(product);
+
             return await _dbContext.SaveChangesAsync();
         }
         public async Task<PagedResult<ProductVm>> GetAllPaging(GetProductPadingRequest request)
@@ -112,8 +132,10 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                         from pic in ppic.DefaultIfEmpty()
                         join c in _dbContext.Categories on pic.CategoryId equals c.Id into picc
                         from c in picc.DefaultIfEmpty()
-                        where pt.LanguageId == request.LanguageId
-                        select new { p, pt, pic };
+                        join pi in _dbContext.ProductImages on p.Id equals pi.ProductId into ppi
+                        from pi in ppi.DefaultIfEmpty()
+                        where pt.LanguageId == request.LanguageId && pi.IsDefault == true
+                        select new { p, pt, pic, pi };
             //2. filter
             if (!string.IsNullOrEmpty(request.Keyword))
                 query = query.Where(x => x.pt.Name.Contains(request.Keyword));
@@ -143,7 +165,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                     SeoTitle = x.pt.SeoTitle,
                     Stock = x.p.Stock,
                     ViewCount = x.p.ViewCount,
-   
+                    ThumbnailImage = x.pi.ImagePath
                 }).ToListAsync();
 
             //4. Select and projection
@@ -155,7 +177,6 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                 Item = data
             };
             return pagedResult;
-
         }
         /// <summary>
         /// 
@@ -224,7 +245,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         /// <param name="productId"></param>
         /// <param name="languageId"></param>
         /// <returns></returns>
-        public async Task<ProductVm> GetById(int productId,string languageId)
+        public async Task<ProductVm> GetById(int productId, string languageId)
         {
             var product = await _dbContext.Products.FindAsync(productId);
             var productTranslation = await _dbContext.ProductTranslations.FirstOrDefaultAsync(x => x.ProductId == productId
@@ -248,7 +269,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
                 SeoAlias = productTranslation != null ? productTranslation.SeoAlias : null,
                 SeoDescription = productTranslation != null ? productTranslation.SeoDescription : null,
                 SeoTitle = productTranslation != null ? productTranslation.SeoTitle : null,
-                Stock =product.Stock,
+                Stock = product.Stock,
                 ViewCount = product.ViewCount,
                 Categories = categories
             };
@@ -285,10 +306,10 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             if (request.ImageFile != null)
             {
                 productImage.ImagePath = await this.SaveFile(request.ImageFile);
-                productImage.FileSize = request.ImageFile.Length;         
+                productImage.FileSize = request.ImageFile.Length;
             }
             _dbContext.ProductImages.Add(productImage);
-             await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return productImage.Id;
         }
         /// <summary>
@@ -296,10 +317,10 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         /// </summary>
         /// <param name="imageId"></param>
         /// <returns></returns>
-        public async Task<int> RemoveImage( int imageId)
+        public async Task<int> RemoveImage(int imageId)
         {
             var productImage = await _dbContext.ProductImages.FindAsync(imageId);
-            if(productImage == null)
+            if (productImage == null)
             {
                 throw new CatShopException($"Cannot find image with id: {imageId}");
             }
@@ -313,10 +334,10 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         /// <param name="imageId"></param>
         /// <param name="request"></param>
         /// <returns></returns>
-        public async Task<int> UpdateImage( int imageId, ProductImageUpdateRequest request)
+        public async Task<int> UpdateImage(int imageId, ProductImageUpdateRequest request)
         {
             var productImage = await _dbContext.ProductImages.FindAsync(imageId);
-            if(productImage == null)
+            if (productImage == null)
             {
                 throw new CatShopException($"Cannot find an image with id: {imageId}");
             }
@@ -354,10 +375,10 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
         /// </summary>
         /// <param name="imageId"></param>
         /// <returns></returns>
-        public  async Task<ProductImageViewModel> GetImageById(int imageId)
+        public async Task<ProductImageViewModel> GetImageById(int imageId)
         {
             var image = await _dbContext.ProductImages.FindAsync(imageId);
-            if(image == null)
+            if (image == null)
             {
                 throw new CatShopException($"Cannot find image");
             }
@@ -418,7 +439,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             //4. Select and projection
             var pagedResult = new PagedResult<ProductVm>()
             {
-                TotalRecords = totalRow,            
+                TotalRecords = totalRow,
                 Item = data
             };
             return pagedResult;
