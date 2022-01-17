@@ -32,6 +32,7 @@ namespace CatShopSolution.BackendAPI.Controllers
         //}
 
         [HttpGet("paging")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllPaging([FromQuery] GetProductPadingRequest request)
         {
             var products = await _ProductService.GetAllPaging(request);
@@ -64,6 +65,7 @@ namespace CatShopSolution.BackendAPI.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [Authorize]
         public async Task<IActionResult>Create([FromForm]ProductCreateRequest request)
         {
             if (!ModelState.IsValid)
@@ -76,13 +78,16 @@ namespace CatShopSolution.BackendAPI.Controllers
             var product = await _ProductService.GetById(productId,request.LanguageId);
             return CreatedAtAction(nameof(GetById), new { id = productId } , product);
         }
-        [HttpPut]
-        public async Task<IActionResult> Update([FromForm] ProductUpdateRequest request)
+        [HttpPut("{productId}")]
+        [Consumes("multipart/form-data")]
+        [Authorize]
+        public async Task<IActionResult> Update([FromRoute] int productId,[FromForm] ProductUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            request.Id = productId;
             var affectedResult = await _ProductService.Update(request);
             if (affectedResult == 0)
                 return BadRequest();;
@@ -100,6 +105,7 @@ namespace CatShopSolution.BackendAPI.Controllers
         }
 
         [HttpPatch("{productId}/{newPrice}")]
+        [Authorize]
         public async Task<IActionResult> UpdatePrice( int productId,decimal newPrice)
         {          
             var isSuccess = await _ProductService.UpdatePrice(productId, newPrice);
@@ -149,6 +155,7 @@ namespace CatShopSolution.BackendAPI.Controllers
             return Ok();
         }
         [HttpGet("{productId}/image/{imageId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetImageById(int productId,int imageId)
         {
             var image = await _ProductService.GetImageById(imageId);

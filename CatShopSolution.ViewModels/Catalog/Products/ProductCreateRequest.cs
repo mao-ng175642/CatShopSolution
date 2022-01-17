@@ -21,7 +21,7 @@ namespace CatShopSolution.ViewModels.Catalog.Products
         public string SeoTitle { get; set; }
         public string SeoAlias { get; set; }
         public string LanguageId { get; set; }
-        public IFormFile ThumbNailImage { get; set; }
+        public IFormFile ThumbnailImage { get; set; }
 
     }
 }

@@ -26,5 +26,14 @@ namespace CatShopSolution.BackendAPI.Controllers
             var products = await _categoryService.GetAll(languageId);
             return Ok(products);
         }
+
+        [HttpGet("{id}/{languageId}")]
+        public async Task<IActionResult> GetById(string languageId,int id)
+        {
+            var category = await _categoryService.GetById(languageId, id);
+            return Ok(category);
+        }
+
+
     }
 }
