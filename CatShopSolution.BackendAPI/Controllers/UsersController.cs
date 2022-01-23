@@ -23,18 +23,18 @@ namespace CatShopSolution.BackendAPI.Controllers
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate([FromBody]LoginRequest request)
+        public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
         {
             if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _userService.Authencate(request);
+
+            if (string.IsNullOrEmpty(result.ResultObj))
             {
-                return BadRequest();
+                return BadRequest(result);
             }
-            var resultToken = await _userService.Authencate(request);
-            if(string.IsNullOrEmpty(resultToken.ResultObj))
-            {
-                return BadRequest("Username or password is incorrect");
-            }       
-            return Ok( resultToken);
+            return Ok(result);
         }
         [HttpPost]
         [AllowAnonymous]

@@ -1,6 +1,9 @@
 using CatShopSolution.ApiIntegration;
+using CatShopSolution.ViewModels.System.Users;
 using CatShopSolution.WebApp.LocalizationResources;
+using FluentValidation.AspNetCore;
 using LazZiya.ExpressLocalization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,35 +40,42 @@ namespace CatShopSolution.WebApp
             };
 
             services.AddControllersWithViews()
-            .AddExpressLocalization<ExpressLocalizationResource, ViewLocalizationResource>(ops =>
-             {
-                 // When using all the culture providers, the localization process will
-                 // check all available culture providers in order to detect the request culture.
-                 // If the request culture is found it will stop checking and do localization accordingly.
-                 // If the request culture is not found it will check the next provider by order.
-                 // If no culture is detected the default culture will be used.
-
-                 // Checking order for request culture:
-                 // 1) RouteSegmentCultureProvider
-                 //      e.g. http://localhost:1234/tr
-                 // 2) QueryStringCultureProvider
-                 //      e.g. http://localhost:1234/?culture=tr
-                 // 3) CookieCultureProvider
-                 //      Determines the culture information for a request via the value of a cookie.
-                 // 4) AcceptedLanguageHeaderRequestCultureProvider
-                 //      Determines the culture information for a request via the value of the Accept-Language header.
-                 //      See the browsers language settings
-
-                 // Uncomment and set to true to use only route culture provider
-                 ops.UseAllCultureProviders = false;
-                 ops.ResourcesPath = "LocalizationResources";
-                 ops.RequestLocalizationOptions = o =>
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<LoginRequestValidator>())
+                .AddExpressLocalization<ExpressLocalizationResource, ViewLocalizationResource>(ops =>
                  {
-                     o.SupportedCultures = cultures;
-                     o.SupportedUICultures = cultures;
-                     o.DefaultRequestCulture = new RequestCulture("vi");
-                 };
-             }); ;
+                     // When using all the culture providers, the localization process will
+                     // check all available culture providers in order to detect the request culture.
+                     // If the request culture is found it will stop checking and do localization accordingly.
+                     // If the request culture is not found it will check the next provider by order.
+                     // If no culture is detected the default culture will be used.
+
+                     // Checking order for request culture:
+                     // 1) RouteSegmentCultureProvider
+                     //      e.g. http://localhost:1234/tr
+                     // 2) QueryStringCultureProvider
+                     //      e.g. http://localhost:1234/?culture=tr
+                     // 3) CookieCultureProvider
+                     //      Determines the culture information for a request via the value of a cookie.
+                     // 4) AcceptedLanguageHeaderRequestCultureProvider
+                     //      Determines the culture information for a request via the value of the Accept-Language header.
+                     //      See the browsers language settings
+
+                     // Uncomment and set to true to use only route culture provider
+                     ops.UseAllCultureProviders = false;
+                     ops.ResourcesPath = "LocalizationResources";
+                     ops.RequestLocalizationOptions = o =>
+                     {
+                         o.SupportedCultures = cultures;
+                         o.SupportedUICultures = cultures;
+                         o.DefaultRequestCulture = new RequestCulture("vi");
+                     };
+                 }); 
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/User/Forbindden/";
+                });
 
             services.AddSession(options =>
             {
@@ -75,6 +85,7 @@ namespace CatShopSolution.WebApp
             services.AddTransient<ISlideApiClient, SlideApiClient>();
             services.AddTransient<IProductApiClient, ProductApiClient>();
             services.AddTransient<ICategoryApiClient, CategoryApiClient>();
+            services.AddTransient<IUserAPIClient, UserAPIClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -93,6 +104,7 @@ namespace CatShopSolution.WebApp
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();

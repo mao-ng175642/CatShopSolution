@@ -23,6 +23,7 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
     {
         private readonly CatShopDbContext _dbContext;
         private readonly IStorageService _storageService;
+        private const string USER_CONTENT_FOLDER_NAME = "user-content";
         public ProductService(CatShopDbContext dbContext, IStorageService storageService)
         {
             _dbContext = dbContext;
@@ -285,8 +286,8 @@ namespace CatShopSolution.Application.Catalog.Products.Dtos
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return fileName;
-        }
+            return "/" + USER_CONTENT_FOLDER_NAME + "/" + fileName;
+        } 
         /// <summary>
         /// 
         /// </summary>

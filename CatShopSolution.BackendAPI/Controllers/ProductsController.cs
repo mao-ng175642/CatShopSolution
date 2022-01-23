@@ -95,7 +95,7 @@ namespace CatShopSolution.BackendAPI.Controllers
         }
 
 
-        [HttpDelete("productId")]
+        [HttpDelete("{productId}")]
         public async Task<IActionResult> Delete(int productId )
         {
             var affectedResult = await _ProductService.Delete(productId);

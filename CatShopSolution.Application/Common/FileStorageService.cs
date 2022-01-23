@@ -37,10 +37,5 @@ namespace CatShopSolution.Application.Common
             using var output = new FileStream(filePath, FileMode.Create);
             await mediaBinaryStream.CopyToAsync(output);
         }
-
-        Task IStorageService.DeleteFileAsync(string fileName)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

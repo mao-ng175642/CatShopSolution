@@ -36,7 +36,6 @@ namespace CatShopSolution.ApiIntegration
             var response = await client.PostAsync("/api/users/authenticate", httpContent);
             if (response.IsSuccessStatusCode)
             {
-
                 return JsonConvert.DeserializeObject<ApiSuccessResult<string>>(await response.Content.ReadAsStringAsync());
             }
 
