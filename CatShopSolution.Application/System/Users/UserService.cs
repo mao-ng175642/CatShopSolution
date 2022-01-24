@@ -40,7 +40,7 @@ namespace CatShopSolution.Application.System.Users
             var result =  await _signInManager.PasswordSignInAsync(user, request.PassWord, request.RememberMe, true);
             if (!result.Succeeded)
             {
-                return new ApiErrorResult<string>("Đăng nhập thất bại");
+                return new ApiErrorResult<string>("Tài khoản hoặc mặt khẩu khồn đúng!");
             }
             var roles = await _userManager.GetRolesAsync(user);
             var claims = new[]
@@ -137,6 +137,7 @@ namespace CatShopSolution.Application.System.Users
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
                 Dob = request.Dob,
+
             };
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)

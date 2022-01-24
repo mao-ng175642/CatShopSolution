@@ -7,7 +7,7 @@ namespace CatShopSolution.Utilitils.Constants
     public class SystemConstants
     {
         public const string MainConnectionString = "CatShopSolutionDb";
-
+        public const string CartSession = "CartSession";
         public class AppSettings
         {
             public const string DefaultLanguageId = "DefaultLanguageId";
