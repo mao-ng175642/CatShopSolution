@@ -6,4 +6,6 @@
 - Boostraps 3
 - jquery
 - Sqlserver
+- Restfull API 
+- Swagger 
 
