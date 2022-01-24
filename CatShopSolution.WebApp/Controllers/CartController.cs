@@ -84,10 +84,7 @@ namespace CatShopSolution.WebApp.Controllers
             {
                 quantity = currentCart.First(x => x.ProductId == id).Quantity + 1;
             }
-            if(session == null)
-            {
-                return BadRequest();
-            }
+           
             var cartItem = new CartItemViewModel()
             {
                 ProductId = id,
@@ -101,6 +98,7 @@ namespace CatShopSolution.WebApp.Controllers
             currentCart.Add(cartItem);
 
             HttpContext.Session.SetString(SystemConstants.CartSession, JsonConvert.SerializeObject(currentCart));
+           
             return Ok(currentCart);
         }
 
